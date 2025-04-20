@@ -1,4 +1,4 @@
-# flask_streamer_node.py
+#!/usr/bin/env python3
 
 import cv2
 from flask import Flask, Response
