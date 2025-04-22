@@ -3,7 +3,7 @@
  * 
  * Send strings over serial (115200 baud rate) in CSV format:
  *
- * <left speed>, <right speed>, <left dir>, <right dir>
+ *  "<left speed>, <right speed>, <left dir>, <right dir>\n"
  *
  * Speed is 0..100. dir is 0 or 1
  * 
@@ -12,7 +12,7 @@
 
 // Settings
 #define DEBUG 0
-const int min_speed = 60;
+const int min_speed = 120;
 constexpr int max_chars = 64;
 constexpr int max_vals = 4;
 
@@ -94,7 +94,7 @@ void loop() {
 
   // Calculate motor speed: map 1..100 to min_speed..255
   int l_speed = vals[0] > 0 ? vals[0] : 0;
-  int r_speed = vals[0] > 0 ? vals[1] : 0;
+  int r_speed = vals[1] > 0 ? vals[1] : 0;
   if (l_speed > 0) {
     l_speed = map(l_speed, 1, 100, min_speed, 255);
   }

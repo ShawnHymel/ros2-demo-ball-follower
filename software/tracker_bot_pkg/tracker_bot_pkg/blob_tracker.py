@@ -49,6 +49,9 @@ class BlobTracker(Node):
         self._frame_counter = 0
         self._skip_frames = self.get_parameter('skip_frames').value
 
+        # Publish counter to avoid publishing no bounding boxes
+        self._publish_counter = 0
+
         # Create a timer to periodically capture images
         self._timer = self.create_timer(
             self.get_parameter('publish_period').value,
@@ -99,17 +102,23 @@ class BlobTracker(Node):
             c = max(contours, key=cv2.contourArea)
             x, y, w, h = cv2.boundingRect(c)
 
+            # Reset publish counter
+            self._publish_counter = 0
+
         # If no contours are found, set bounding box to negative values
         else:
             x, y, w, h = -1, -1, -1, -1
+            self._publish_counter += 1
+            self._publish_counter = min(self._publish_counter, 2)
 
         # Publish bounding box
-        bbox_msg = BoundingBox()
-        bbox_msg.x = x
-        bbox_msg.y = y
-        bbox_msg.width = w
-        bbox_msg.height = h
-        self._bbox_pub.publish(bbox_msg)
+        if self._publish_counter < 2:
+            bbox_msg = BoundingBox()
+            bbox_msg.x = x
+            bbox_msg.y = y
+            bbox_msg.width = w
+            bbox_msg.height = h
+            self._bbox_pub.publish(bbox_msg)
 
         # Every nth frame, publish the image
         self._frame_counter += 1
