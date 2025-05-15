@@ -12,15 +12,15 @@
 
 // Settings
 #define DEBUG 0
-const int min_speed = 120;
+const int min_speed = 90;
 constexpr int max_chars = 64;
 constexpr int max_vals = 4;
 
 // Pins
-const int mt_l_dir_pin = 6;
-const int mt_l_pwm_pin = 7;
-const int mt_r_dir_pin = 14;
-const int mt_r_pwm_pin = 15;
+const int mt_l_dir_pin = 35;
+const int mt_l_pwm_pin = 34;
+const int mt_r_dir_pin = 32;
+const int mt_r_pwm_pin = 33;
 
 // Buffers
 char input_buf[max_chars];
@@ -100,6 +100,14 @@ void loop() {
   }
   if (r_speed > 0) {
     r_speed = map(r_speed, 1, 100, min_speed, 255);
+  }
+
+  // PWM signal is inverted in reverse
+  if (l_dir == 1) {
+    l_speed = 255 - l_speed;
+  }
+  if (r_dir == 1) {
+    r_speed = 255 - r_speed;
   }
   
   // Set motor speeds

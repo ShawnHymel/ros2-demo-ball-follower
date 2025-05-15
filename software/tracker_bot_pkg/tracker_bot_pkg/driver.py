@@ -100,13 +100,13 @@ class Driver(Node):
 
         # Initialize PID controllers for alignment and distance to target
         self._align_pid = PID(
-            kp=0.1, 
+            kp=0.05, 
             ki=0.005, 
             kd=0.0, 
             limits=(-100, 100)
         )
         self._distance_pid = PID(
-            kp=0.3, 
+            kp=0.2, 
             ki=0.02, 
             kd=0.0, 
             limits=(-100, 100)
@@ -158,7 +158,7 @@ class Driver(Node):
             # Calculate left and right motor speeds
             left_speed = distance_output + align_output
             right_speed = distance_output - align_output
-            left_dir = 0 if left_speed >= 0 else 1
+            left_dir = 1 if left_speed >= 0 else 0
             right_dir = 1 if right_speed >= 0 else 0
             left_speed = int(min(abs(left_speed), 100))
             right_speed = int(min(abs(right_speed), 100))
